@@ -1,0 +1,41 @@
+{
+  "name": "cvai-api",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon --exec node --experimental-strip-types src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.86.1",
+    "@azure/openai": "^2.0.0",
+    "@react-pdf/renderer": "^4.4.1",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.1",
+    "express": "^5.2.1",
+    "helmet": "^8.1.0",
+    "mammoth": "^1.12.0",
+    "multer": "^2.1.1",
+    "nanoid": "^5.1.7",
+    "openai": "^6.34.0",
+    "pdf-parse": "^2.4.5",
+    "unpdf": "^1.6.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/multer": "^2.1.0",
+    "@types/node": "^25.5.2",
+    "@types/pdf-parse": "^1.1.5",
+    "@types/react": "^19.2.14",
+    "nodemon": "^3.1.14",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.2"
+  }
+}
