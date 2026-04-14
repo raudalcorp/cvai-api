@@ -3,10 +3,10 @@
 // Order: Adzuna → JSearch → Remotive
 // If a provider fails or returns 0 results, the next one is tried.
 
-import { AdzunaProvider }   from './providers/adzuna'
-import { JSearchProvider }  from './providers/jsearch'
-import { RemotiveProvider } from './providers/remotive'
-import type { JobSearchParams, JobSearchResult, JobProvider } from './types'
+import { AdzunaProvider }   from './providers/adzuna.js'
+import { JSearchProvider }  from './providers/jsearch.js'
+import { RemotiveProvider } from './providers/remotive.js'
+import type { JobSearchParams, JobSearchResult, JobProvider } from './types.js'
 
 // Build the provider chain based on which keys are configured
 function buildProviderChain(): JobProvider[] {

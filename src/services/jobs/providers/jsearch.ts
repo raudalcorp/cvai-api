@@ -3,7 +3,7 @@
 // Aggregates Indeed, LinkedIn, Glassdoor and others.
 // Env vars: JSEARCH_RAPIDAPI_KEY
 
-import type { JobProvider, JobSearchParams, JobSearchResult, JobListing } from '../types'
+import type { JobProvider, JobSearchParams, JobSearchResult, JobListing } from '../types.js'
 
 export class JSearchProvider implements JobProvider {
   name = 'JSearch'

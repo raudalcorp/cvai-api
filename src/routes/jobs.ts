@@ -2,9 +2,9 @@
 // Add to server.ts: app.use('/jobs', internalAuth, jobRoutes)
 
 import { Router, Request, Response } from 'express'
-import { searchJobs }      from '../services/jobs/search'
-import { scoreJobAffinity } from '../services/jobs/affinity'
-import type { CvFormData } from '../types/cv-types'
+import { searchJobs }      from '../services/jobs/search.js'
+import { scoreJobAffinity } from '../services/jobs/affinity.js'
+import type { CvFormData } from '../types/cv-types.js'
 
 const router = Router()
 

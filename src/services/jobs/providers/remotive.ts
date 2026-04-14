@@ -3,7 +3,7 @@
 // Only returns remote jobs — used as last fallback.
 // Docs: https://remotive.com/api/remote-jobs
 
-import type { JobProvider, JobSearchParams, JobSearchResult, JobListing } from '../types'
+import type { JobProvider, JobSearchParams, JobSearchResult, JobListing } from '../types.js'
 
 export class RemotiveProvider implements JobProvider {
   name = 'Remotive'

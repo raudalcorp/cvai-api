@@ -6,10 +6,10 @@ import express from 'express'
 import cors    from 'cors'
 import helmet  from 'helmet'
 
-import { internalAuth } from './middleware/auth'
-import cvRoutes   from './routes/cv'
-import jobRoutes  from './routes/jobs'
-import { getAIProvider } from './services/ai/provider'
+import { internalAuth } from './middleware/auth.js'
+import cvRoutes   from './routes/cv.js'
+import jobRoutes  from './routes/jobs.js'
+import { getAIProvider } from './services/ai/provider.js'
 
 const app  = express()
 const PORT = process.env.PORT ?? 3001

@@ -2,9 +2,9 @@
 // Uses the AI provider to score how well a job matches the user's CV.
 // Returns a 0–100 score and a short justification per job.
 
-import { getAIProvider } from '../ai/provider'
-import type { JobListing } from './types'
-import type { CvFormData } from '../../types/cv-types'
+import { getAIProvider } from '../ai/provider.js'
+import type { JobListing } from './types.js'
+import type { CvFormData } from '../../types/cv-types.js'
 
 export interface JobWithAffinity extends JobListing {
   affinityScore: number   // 0–100

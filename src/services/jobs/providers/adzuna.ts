@@ -3,7 +3,7 @@
 // Docs: https://developer.adzuna.com/docs/search
 // Env vars: ADZUNA_APP_ID, ADZUNA_APP_KEY
 
-import type { JobProvider, JobSearchParams, JobSearchResult, JobListing } from '../types'
+import type { JobProvider, JobSearchParams, JobSearchResult, JobListing } from '../types.js'
 
 // Maps common country names/codes to Adzuna's country codes
 const COUNTRY_MAP: Record<string, string> = {
