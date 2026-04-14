@@ -3,7 +3,7 @@
 // Uses the same provider adapter as cv-structurer — works with
 // Azure OpenAI, OpenAI direct, or Anthropic.
 
-import { getAIProvider } from './provider'
+import { getAIProvider } from './provider.ts'
 import type { CvFormData } from '../../types/cv-types'
 
 type SupportedLang = 'es' | 'en'

@@ -5,7 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --exec node --experimental-strip-types src/server.ts",
+    "dev": "nodemon --exec tsx src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js"
   },
@@ -24,7 +24,7 @@
     "multer": "^2.1.1",
     "nanoid": "^5.1.7",
     "openai": "^6.34.0",
-    "pdf-parse": "^2.4.5",
+    "pdfjs-dist": "^5.6.205",
     "unpdf": "^1.6.0"
   },
   "devDependencies": {
@@ -36,6 +36,7 @@
     "@types/react": "^19.2.14",
     "nodemon": "^3.1.14",
     "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "typescript": "^6.0.2"
   }
 }

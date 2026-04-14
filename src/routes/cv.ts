@@ -1,13 +1,13 @@
-import { generateCvPdf } from "../services/pdf/generator";
+import { generateCvPdf } from "../services/pdf/generator.ts";
 import { Router } from "express";
 import type { Request, Response } from "express";
 // src/routes/cv.ts  — DROP-IN REPLACEMENT for the existing file
 import multer from 'multer'
-import { extractTextFromPdf }  from '../services/parser/pdf'
-import { extractTextFromDocx } from '../services/parser/docx'
-import { structureCvText }     from '../services/ai/cv-structurer'
-import { translateCv }         from '../services/ai/cv-translator'
-import type { CvFormData }     from '../types/cv-types'
+import { extractTextFromPdf }  from '../services/parser/pdf.ts'
+import { extractTextFromDocx } from '../services/parser/docx.ts'
+import { structureCvText }     from '../services/ai/cv-structurer.ts'
+import { translateCv }         from '../services/ai/cv-translator.ts'
+import type { CvFormData }     from '../types/cv-types.ts'
 
 const router = Router()
 

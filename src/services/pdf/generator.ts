@@ -1,7 +1,7 @@
 // src/services/pdf/generator.ts
 import React from "react";
 import { renderToBuffer } from "@react-pdf/renderer";
-import type { CvFormData } from "../../types/cv-types";
+import type { CvFormData } from "../../types/cv-types.ts";
 import { ClassicTemplate } from "./templates/classic";
 import { ModernTemplate } from "./templates/modern";
 import { MinimalTemplate } from "./templates/minimal";
