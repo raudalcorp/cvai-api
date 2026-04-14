@@ -1,10 +1,5 @@
-// src/services/ai/cv-translator.ts
-// Translates a full CvFormData from one language to another.
-// Uses the same provider adapter as cv-structurer — works with
-// Azure OpenAI, OpenAI direct, or Anthropic.
-
-import { getAIProvider } from './provider.ts'
-import type { CvFormData } from '../../types/cv-types'
+import { getAIProvider } from './provider.js'
+import type { CvFormData } from '../../types/cv-types.js'
 
 type SupportedLang = 'es' | 'en'
 

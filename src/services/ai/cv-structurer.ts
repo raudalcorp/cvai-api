@@ -1,5 +1,5 @@
-import { getAIProvider } from '../ai/provider.ts'
-import type { ParsedCvResponse } from '../../types/cv-types.ts'
+import { getAIProvider } from '../ai/provider.js'
+import type { ParsedCvResponse } from '../../types/cv-types.js'
 import { nanoid } from 'nanoid'
 
 // ─────────────────────────────────────────────────────────────

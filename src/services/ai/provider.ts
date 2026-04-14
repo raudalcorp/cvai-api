@@ -1,11 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// AI Provider abstraction
-// Supports: Azure OpenAI · OpenAI direct · Anthropic (Claude)
-//
-// Which provider is used is determined by environment variables.
-// Priority: AZURE_OPENAI_ENDPOINT → ANTHROPIC_API_KEY → OPENAI_API_KEY
-// ─────────────────────────────────────────────────────────────
-
 import OpenAI from 'openai'
 import Anthropic from '@anthropic-ai/sdk'
 

@@ -2,7 +2,7 @@ import React from 'react'
 import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer'
 import type {
   CvFormData, Experience, Education, Certification, Language,
-} from '../../../types/cv-types'
+} from '../../../types/cv-types.js'
 
 const C = {
   accent: '#4f46e5', accentLt: '#e0e7ff', text: '#1e293b',

@@ -2,7 +2,7 @@ import React from 'react'
 import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer'
 import type {
   CvFormData, Experience, Education, Certification, Language,
-} from '../../../types/cv-types'
+} from '../../../types/cv-types.js'
 
 const C = { text: '#111827', subtle: '#4b5563', muted: '#9ca3af', border: '#d1d5db' }
 

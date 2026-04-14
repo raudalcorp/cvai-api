@@ -1,6 +1,3 @@
-// Mirrors the types defined in the Next.js frontend (types/cv.ts).
-// Keep in sync manually or extract to a shared package in the future.
-
 export type Modality = 'presencial' | 'hibrido' | 'remoto'
 export type LanguageLevel = 'principiante' | 'intermedio' | 'profesional' | 'nativo'
 
