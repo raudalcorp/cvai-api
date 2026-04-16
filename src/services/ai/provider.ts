@@ -12,25 +12,23 @@ export interface AIProvider {
   chat(messages: AIMessage[], maxTokens?: number): Promise<string>
 }
 
-// ── Google Gemini Provider (NUEVO) ───────────────────────────
+// ── Google Gemini Provider (lastest) ───────────────────────────
 class GeminiProvider implements AIProvider {
   name = 'Google Gemini'
   private genAI: GoogleGenerativeAI
-  private model: any
+  private modelName = 'gemini-1.5-flash-latest' 
 
   constructor() {
     this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
-    // Usamos 1.5-flash por su velocidad y gratuidad
-    this.model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
   }
 
   async chat(messages: AIMessage[], maxTokens = 2000): Promise<string> {
     const systemInstruction = messages.find(m => m.role === 'system')?.content
     const userMessage = messages.find(m => m.role === 'user')?.content ?? ''
 
-    // Gemini maneja el System Prompt de forma separada en la configuración
+    // Usamos el modelo con el sufijo -latest o -001
     const modelWithSystem = this.genAI.getGenerativeModel({ 
-      model: 'gemini-1.5-flash',
+      model: this.modelName, 
       systemInstruction: systemInstruction 
     })
 
@@ -38,10 +36,10 @@ class GeminiProvider implements AIProvider {
       contents: [{ role: 'user', parts: [{ text: userMessage }] }],
       generationConfig: {
         maxOutputTokens: maxTokens,
-        temperature: 0.1, // Baja temperatura para JSON consistente
+        temperature: 0.1,
       },
     })
-
+    
     const response = await result.response
     return response.text()
   }
