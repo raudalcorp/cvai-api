@@ -29,9 +29,7 @@ export async function extractTextFromPdf(buffer: Buffer): Promise<string> {
       .map((item) => ("str" in item ? item.str : ""))
       .filter(Boolean);
 
-    if (lines.length > 0) {
-      pagesText.push(lines.join(" "));
-    }
+    if (lines.length > 0) pagesText.push(lines.join(" "));
   }
 
   return normalizeText(pagesText.join("\n"));
