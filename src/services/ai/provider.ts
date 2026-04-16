@@ -12,39 +12,64 @@ export interface AIProvider {
   chat(messages: AIMessage[], maxTokens?: number): Promise<string>
 }
 
-// ── Google Gemini Provider (lastest) ───────────────────────────
+// ── Groq Provider (Prioridad Actual) ──────────────────────────
+class GroqProvider implements AIProvider {
+  name = 'Groq'
+  private client: OpenAI
+  private model: string
+
+  constructor() {
+    // Groq es compatible con el SDK de OpenAI
+    this.client = new OpenAI({
+      apiKey: process.env.GROQ_API_KEY!,
+      baseURL: 'https://api.groq.com/openai/v1',
+    })
+    this.model = process.env.GROQ_MODEL ?? 'llama3-8b-8192'
+  }
+
+  async chat(messages: AIMessage[], maxTokens = 2000): Promise<string> {
+    const res = await this.client.chat.completions.create({
+      model: this.model,
+      messages,
+      max_tokens: maxTokens,
+      temperature: 0.1,
+      response_format: { type: 'json_object' } // Groq soporta modo JSON nativo
+    })
+    return res.choices[0]?.message?.content ?? ''
+  }
+}
+
+// ── Google Gemini Provider (Actualizado con IDs de tu lista) ──
 class GeminiProvider implements AIProvider {
   name = 'Google Gemini'
   private genAI: GoogleGenerativeAI
-  private modelName = 'gemini-1.5-flash-latest' 
+  private modelName = 'gemini-2.0-flash' // Basado en tu diagnóstico exitoso
 
   constructor() {
     this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
   }
 
-  async chat(messages: AIMessage[], maxTokens = 2000): Promise<string> {
+  async chat(messages: AIMessage[], maxTokens = 2500): Promise<string> {
     const systemInstruction = messages.find(m => m.role === 'system')?.content
     const userMessage = messages.find(m => m.role === 'user')?.content ?? ''
 
-    // Usamos el modelo con el sufijo -latest o -001
-    const modelWithSystem = this.genAI.getGenerativeModel({ 
-      model: this.modelName, 
-      systemInstruction: systemInstruction 
-    })
+    const model = this.genAI.getGenerativeModel(
+      { model: this.modelName, systemInstruction },
+      { apiVersion: 'v1' }
+    )
 
-    const result = await modelWithSystem.generateContent({
+    const result = await model.generateContent({
       contents: [{ role: 'user', parts: [{ text: userMessage }] }],
       generationConfig: {
         maxOutputTokens: maxTokens,
         temperature: 0.1,
       },
     })
-    
+
     const response = await result.response
     return response.text()
   }
 }
-
 // ── Azure OpenAI ──────────────────────────────────────────────
 class AzureOpenAIProvider implements AIProvider {
   name = 'Azure OpenAI'
@@ -127,37 +152,35 @@ return block.type === "text" ? block.text : "";
   }
 }
 
-// ── Factory — auto-selects based on env vars ─────────────────
+// ── Factory ───────────────────────────────────────────────────
 let _provider: AIProvider | null = null
 
 export function getAIProvider(): AIProvider {
-  if (_provider) return _provider;
+  if (_provider) return _provider
 
-  // Prioridad 1: Gemini (Gratis y robusto)
-  if (process.env.GEMINI_API_KEY) {
-    console.log("[AI] Using Google Gemini");
-    _provider = new GeminiProvider();
-  }
-  // Prioridad 2: Azure
-  else if (
-    process.env.AZURE_OPENAI_ENDPOINT &&
-    process.env.AZURE_OPENAI_API_KEY
-  ) {
-    console.log("[AI] Using Azure OpenAI");
-    _provider = new AzureOpenAIProvider();
-  }
-  // Prioridad 3: Anthropic
+  // 1. Prioridad: Groq (Gratuito y rápido para desarrollo)
+  if (process.env.GROQ_API_KEY) {
+    console.log('[AI] Using Groq')
+    _provider = new GroqProvider()
+  } 
+  // 2. Gemini
+  else if (process.env.GEMINI_API_KEY) {
+    console.log('[AI] Using Google Gemini')
+    _provider = new GeminiProvider()
+  } 
+  // 3. Anthropic
   else if (process.env.ANTHROPIC_API_KEY) {
-    console.log("[AI] Using Anthropic (Claude)");
-    _provider = new AnthropicProvider();
-  }
-  // Prioridad 4: OpenAI Direct (El que te dio el error 429)
+    console.log('[AI] Using Anthropic (Claude)')
+    _provider = new AnthropicProvider()
+  } 
+  // 4. OpenAI
   else if (process.env.OPENAI_API_KEY) {
-    console.log("[AI] Using OpenAI direct");
-    _provider = new OpenAIProvider();
-  } else {
-    throw new Error("No AI provider API keys found in environment variables.");
+    console.log('[AI] Using OpenAI direct')
+    _provider = new OpenAIProvider()
+  } 
+  else {
+    throw new Error('No AI provider API keys found in environment variables.')
   }
 
-  return _provider;
+  return _provider
 }
