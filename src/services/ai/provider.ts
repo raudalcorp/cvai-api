@@ -1,5 +1,6 @@
 import OpenAI from 'openai'
 import Anthropic from '@anthropic-ai/sdk'
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export interface AIMessage {
   role: 'system' | 'user'
@@ -9,6 +10,41 @@ export interface AIMessage {
 export interface AIProvider {
   name: string
   chat(messages: AIMessage[], maxTokens?: number): Promise<string>
+}
+
+// ── Google Gemini Provider (NUEVO) ───────────────────────────
+class GeminiProvider implements AIProvider {
+  name = 'Google Gemini'
+  private genAI: GoogleGenerativeAI
+  private model: any
+
+  constructor() {
+    this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
+    // Usamos 1.5-flash por su velocidad y gratuidad
+    this.model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
+  }
+
+  async chat(messages: AIMessage[], maxTokens = 2000): Promise<string> {
+    const systemInstruction = messages.find(m => m.role === 'system')?.content
+    const userMessage = messages.find(m => m.role === 'user')?.content ?? ''
+
+    // Gemini maneja el System Prompt de forma separada en la configuración
+    const modelWithSystem = this.genAI.getGenerativeModel({ 
+      model: 'gemini-1.5-flash',
+      systemInstruction: systemInstruction 
+    })
+
+    const result = await modelWithSystem.generateContent({
+      contents: [{ role: 'user', parts: [{ text: userMessage }] }],
+      generationConfig: {
+        maxOutputTokens: maxTokens,
+        temperature: 0.1, // Baja temperatura para JSON consistente
+      },
+    })
+
+    const response = await result.response
+    return response.text()
+  }
 }
 
 // ── Azure OpenAI ──────────────────────────────────────────────
@@ -97,22 +133,33 @@ return block.type === "text" ? block.text : "";
 let _provider: AIProvider | null = null
 
 export function getAIProvider(): AIProvider {
-  if (_provider) return _provider
+  if (_provider) return _provider;
 
-  if (process.env.AZURE_OPENAI_ENDPOINT && process.env.AZURE_OPENAI_API_KEY) {
-    console.log('[AI] Using Azure OpenAI')
-    _provider = new AzureOpenAIProvider()
-  } else if (process.env.ANTHROPIC_API_KEY) {
-    console.log('[AI] Using Anthropic (Claude)')
-    _provider = new AnthropicProvider()
-  } else if (process.env.OPENAI_API_KEY) {
-    console.log('[AI] Using OpenAI direct')
-    _provider = new OpenAIProvider()
+  // Prioridad 1: Gemini (Gratis y robusto)
+  if (process.env.GEMINI_API_KEY) {
+    console.log("[AI] Using Google Gemini");
+    _provider = new GeminiProvider();
+  }
+  // Prioridad 2: Azure
+  else if (
+    process.env.AZURE_OPENAI_ENDPOINT &&
+    process.env.AZURE_OPENAI_API_KEY
+  ) {
+    console.log("[AI] Using Azure OpenAI");
+    _provider = new AzureOpenAIProvider();
+  }
+  // Prioridad 3: Anthropic
+  else if (process.env.ANTHROPIC_API_KEY) {
+    console.log("[AI] Using Anthropic (Claude)");
+    _provider = new AnthropicProvider();
+  }
+  // Prioridad 4: OpenAI Direct (El que te dio el error 429)
+  else if (process.env.OPENAI_API_KEY) {
+    console.log("[AI] Using OpenAI direct");
+    _provider = new OpenAIProvider();
   } else {
-    throw new Error(
-      '[AI] No provider configured. Set AZURE_OPENAI_ENDPOINT, ANTHROPIC_API_KEY, or OPENAI_API_KEY.'
-    )
+    throw new Error("No AI provider API keys found in environment variables.");
   }
 
-  return _provider
+  return _provider;
 }
