@@ -38,6 +38,39 @@ class GroqProvider implements AIProvider {
   }
 }
 
+// ── Azure AI Foundry ──────────────────────────────────────────
+// Uses OpenAI-compatible SDK pointed at Azure AI Foundry.
+// Deployment: gpt-4.1-nano.
+class AzureFoundryProvider implements AIProvider {
+  name = "Azure AI Foundry";
+  private client: OpenAI;
+  private deployment: string;
+
+  constructor() {
+    this.deployment = process.env.AZURE_OPENAI_DEPLOYMENT ?? "gpt-4.1-nano";
+    this.client = new OpenAI({
+      apiKey: process.env.AZURE_OPENAI_API_KEY!,
+      baseURL:
+        process.env.AZURE_OPENAI_ENDPOINT +
+        "/openai/deployments/" +
+        process.env.AZURE_OPENAI_DEPLOYMENT,
+      defaultQuery: { "api-version": "2024-12-01-preview" },
+      defaultHeaders: { "api-key": process.env.AZURE_OPENAI_API_KEY! },
+    });
+  }
+
+  async chat(messages: AIMessage[], maxTokens = 2000): Promise<string> {
+    const res = await this.client.chat.completions.create({
+      model: this.deployment,
+      messages,
+      max_tokens: maxTokens,
+      temperature: 0.1,
+      response_format: { type: "json_object" },
+    });
+    return res.choices[0]?.message?.content ?? "";
+  }
+}
+
 // ── Google Gemini ─────────────────────────────────────────────
 // Free tier. FIX: systemInstruction only works on apiVersion 'v1beta'.
 // Using 'v1' caused the "Unknown name systemInstruction" 400 error.
@@ -158,6 +191,8 @@ function buildChain(): AIProvider[] {
   const chain: AIProvider[] = [];
 
   if (process.env.GROQ_API_KEY) chain.push(new GroqProvider());
+  if (process.env.AZURE_OPENAI_ENDPOINT && process.env.AZURE_OPENAI_API_KEY)
+    chain.push(new AzureFoundryProvider());
   if (process.env.GEMINI_API_KEY) chain.push(new GeminiProvider());
   if (process.env.ANTHROPIC_API_KEY) chain.push(new AnthropicProvider());
   if (process.env.OPENAI_API_KEY) chain.push(new OpenAIProvider());
