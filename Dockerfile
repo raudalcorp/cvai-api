@@ -3,11 +3,11 @@ FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-# Copiar solo los archivos de dependencias primero (mejor caching)
+# Copiar dependencias
 COPY package*.json ./
-RUN npm ci --omit=dev
+RUN npm ci
 
-# Copiar el resto del código y compilar
+# Copiar código fuente y compilar
 COPY . .
 RUN npm run build
 
@@ -16,14 +16,14 @@ FROM node:22-alpine
 
 WORKDIR /app
 
-# Copiar solo lo necesario desde el builder
+# Copiar solo lo necesario
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 
 EXPOSE 3001
 
-# Usuario no root por seguridad
+# Usuario no root
 USER node
 
 CMD ["node", "dist/server.js"]
