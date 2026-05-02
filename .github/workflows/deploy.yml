@@ -32,11 +32,6 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ghcr.io/raudalcorp/cvai-api
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=sha
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
@@ -45,5 +40,4 @@ jobs:
           push: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v') }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          # Cache desactivado temporalmente para evitar el error
